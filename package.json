@@ -1,0 +1,32 @@
+{
+  "name": "graphql-depth-limit",
+  "version": "1.0.0",
+  "description": "Limit the complexity of your GraphQL queries based on depth.",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stems/graphql-depth-limit.git"
+  },
+  "keywords": [
+    "graphql",
+    "complexity",
+    "query",
+    "depth",
+    "limit"
+  ],
+  "author": "Andrew Carlson <acarl005@g.ucla.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stems/graphql-depth-limit/issues"
+  },
+  "homepage": "https://github.com/stems/graphql-depth-limit#readme",
+  "peerDependencies": {
+    "graphql": "*"
+  }
+}
