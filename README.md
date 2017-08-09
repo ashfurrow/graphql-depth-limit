@@ -179,12 +179,21 @@ const app = express()
 
 app.use('/graphql', graphqlHTTP((req, res) => ({
   schema,
-  validationRules: [ depthLimit(10, depths => console.log(depths)) ]
+  validationRules: [ depthLimit(10) ]
 })))
 ```
 
-The first argument is the total depth limit. This will throw a validation error for queries (or mutations) with a depth of 11 or more.
-The second argument is a callback which receives an `Object` which is a map of the depths for each operation.
+The first argument is the total depth limit. This will throw a validation error for queries (or mutations) with a depth of 11 or more.<br/>
+The second argument is an options object, where you can do things like specify ignored fields. Introspection fields are ignored by default.<br/>
+The third argument is a callback which receives an `Object` which is a map of the depths for each operation.<br/>
+
+```js
+depthLimit(
+  10,
+  { ignore: [ /_trusted$/, 'idontcare' ] },
+  depths => console.log(depths)
+)
+```
 
 Now the evil query from before will tell the client this:
 
@@ -208,4 +217,20 @@ Now the evil query from before will tell the client this:
 - [ ] Tests
 - [ ] Type-specific sub-depth limits, e.g. you can only descend 3 levels from an `Album` type, 5 levels from the `User` type, etc.
 - [ ] More customization options, like custom errors.
+
+## Documentation
+<a name="depthLimit"></a>
+
+### depthLimit(maxDepth, [options], [callback]) ⇒ <code>function</code>
+Creates a validator for the GraphQL query depth
+
+**Kind**: global function  
+**Returns**: <code>function</code> - The validator function for GraphQL validation phase.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| maxDepth | <code>Number</code> | The maximum allowed depth for any operation in a GraphQL document. |
+| [options] | <code>Object</code> |  |
+| options.ignore | <code>String</code> \| <code>RegExp</code> \| <code>function</code> | Stops recursive depth checking based on a field name. Either a string or regexp to match the name, or a function that reaturns a boolean. |
+| [callback] | <code>function</code> | Called each time validation runs. Receives an Object which is a map of the depths for each operation. |
 
