@@ -45,7 +45,15 @@ query evil {
               album {
                 songs {
                   album {
-                    # and so on...
+                    songs {
+                      album {
+                        songs {
+                          album {
+                            # and so on...
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
