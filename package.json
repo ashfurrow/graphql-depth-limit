@@ -1,6 +1,6 @@
 {
   "name": "graphql-depth-limit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Limit the complexity of your GraphQL queries based on depth.",
   "engines": {
     "node": ">=6.0.0"
