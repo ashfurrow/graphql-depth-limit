@@ -24,8 +24,10 @@ const depthLimit = (maxDepth, options = {}, callback = () => {}) => validationCo
     callback(queryDepths)
     return validationContext
   } catch (err) {
-    console.error(err)
-    throw err
+    /* istanbul ignore next */ { // eslint-disable-line no-lone-blocks
+      console.error(err)
+      throw err
+    }
   }
 }
 
@@ -76,6 +78,7 @@ function determineDepth(node, fragments, depthSoFar, maxDepth, context, operatio
       return Math.max(...node.selectionSet.selections.map(selection =>
         determineDepth(selection, fragments, depthSoFar, maxDepth, context, operationName, options)
       ))
+    /* istanbul ignore next */
     default:
       throw new Error('uh oh! depth crawler cannot handle: ' + node.kind)
   }
@@ -96,6 +99,7 @@ function seeIfIgnored(node, ignore) {
           return true
         }
         break
+      /* istanbul ignore next */
       default:
         throw new Error(`Invalid ignore option: ${rule}`)
     }

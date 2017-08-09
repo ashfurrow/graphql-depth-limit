@@ -9,7 +9,7 @@
   "scripts": {
     "docs": "sed -n '/Documentation/q;p' README.md > README.bak.md; echo '## Documentation' >> README.bak.md; jsdoc2md --heading-depth 3 index.js >> README.bak.md && mv -f README.bak.md README.md",
     "lint": "eslint index.js",
-    "test": "ava test.js"
+    "test": "npm run lint && nyc ava test.js"
   },
   "ava": {
     "verbose": true
@@ -42,7 +42,8 @@
     "eslint": "^4.4.1",
     "eslint-config-airbnb-base": "^11.3.1",
     "graphql": "^0.10.5",
-    "jsdoc-to-markdown": "^3.0.0"
+    "jsdoc-to-markdown": "^3.0.0",
+    "nyc": "^11.1.0"
   },
   "dependencies": {
     "arrify": "^1.0.1"
