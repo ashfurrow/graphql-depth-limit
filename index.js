@@ -12,7 +12,7 @@ const arrify = require('arrify')
  * @param {Function} [callback] - Called each time validation runs. Receives an Object which is a map of the depths for each operation. 
  * @returns {Function} The validator function for GraphQL validation phase.
  */
-const depthLimit = (maxDepth, options = {}, callback = () => {}) => validationContext => {
+const depthLimit = (maxDepth, options = {}, callback = () => {}, handleError = () => {}) => validationContext => {
   try {
     const { definitions } = validationContext.getDocument()
     const fragments = getFragments(definitions)
@@ -26,6 +26,9 @@ const depthLimit = (maxDepth, options = {}, callback = () => {}) => validationCo
   } catch (err) {
     /* istanbul ignore next */ { // eslint-disable-line no-lone-blocks
       console.error(err)
+      if(handleError) {
+        return handleError(err)
+      }
       throw err
     }
   }
