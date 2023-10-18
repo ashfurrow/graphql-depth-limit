@@ -12,14 +12,14 @@ const arrify = require('arrify')
  * @param {Function} [callback] - Called each time validation runs. Receives an Object which is a map of the depths for each operation. 
  * @returns {Function} The validator function for GraphQL validation phase.
  */
-const depthLimit = (maxDepth, handleError = () => {}, options = {}, callback = () => {}) => validationContext => {
+const depthLimit = (maxDepth, logError = () => {}, options = {}, callback = () => {}) => validationContext => {
   try {
     const { definitions } = validationContext.getDocument()
     const fragments = getFragments(definitions)
     const queries = getQueriesAndMutations(definitions)
     const queryDepths = {}
     for (let name in queries) {
-      queryDepths[name] = determineDepth(queries[name], fragments, 0, maxDepth, validationContext, name, handleError, options)
+      queryDepths[name] = determineDepth(queries[name], fragments, 0, maxDepth, validationContext, name, logError, options)
     }
     callback(queryDepths)
     return validationContext
@@ -52,9 +52,9 @@ function getQueriesAndMutations(definitions) {
   }, {})
 }
 
-function determineDepth(node, fragments, depthSoFar, maxDepth, context, operationName, handleError, options) {
+function determineDepth(node, fragments, depthSoFar, maxDepth, context, operationName, logError, options) {
   if (depthSoFar > maxDepth) {
-    handleError(`'${operationName}' exceeds maximum operation depth of ${maxDepth}`)
+    logError(`'${operationName}' exceeds maximum operation depth of ${maxDepth}`)
     return context.reportError(
       new GraphQLError(`'${operationName}' exceeds maximum operation depth of ${maxDepth}`, [ node ])
     )
@@ -69,15 +69,15 @@ function determineDepth(node, fragments, depthSoFar, maxDepth, context, operatio
         return 0
       }
       return 1 + Math.max(...node.selectionSet.selections.map(selection =>
-        determineDepth(selection, fragments, depthSoFar + 1, maxDepth, context, operationName, handleError, options)
+        determineDepth(selection, fragments, depthSoFar + 1, maxDepth, context, operationName, logError, options)
       ))
     case Kind.FRAGMENT_SPREAD:
-      return determineDepth(fragments[node.name.value], fragments, depthSoFar, maxDepth, context, operationName, handleError, options)
+      return determineDepth(fragments[node.name.value], fragments, depthSoFar, maxDepth, context, operationName, logError, options)
     case Kind.INLINE_FRAGMENT:
     case Kind.FRAGMENT_DEFINITION:
     case Kind.OPERATION_DEFINITION:
       return Math.max(...node.selectionSet.selections.map(selection =>
-        determineDepth(selection, fragments, depthSoFar, maxDepth, context, operationName, handleError, options)
+        determineDepth(selection, fragments, depthSoFar, maxDepth, context, operationName, logError, options)
       ))
     /* istanbul ignore next */
     default:
